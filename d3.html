@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+</head>
+
+<body>
+    <p>Vue</p>
+    <p>React</p>
+    <p>Agular</p>
+    <button id="datum">datum</button>
+    <button id="data">data</button>
+
+    <script>
+        const body = d3.select('body')
+        const p = body.selectAll('p')
+        function doDatum() {
+            const str = "Framework"
+            p.datum(str).text(function (d, i) {
+                return `${d}-${i}`
+            })
+        }
+
+        function doData() {
+            const dataset = ["Vue", "React", "Agualr"]
+            p.data(dataset).text(function (d, i) {
+                return `${d}-${i}`
+            })
+        }
+        document.getElementById('datum').addEventListener('click', function () {
+            doDatum()
+        })
+        document.getElementById('data').addEventListener('click', function () {
+            doData()
+        })
+    </script>
+</body>
+
+</html>
