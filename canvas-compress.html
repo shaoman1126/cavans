@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="file" id="upload" />
+
+    <script>
+        const ACCEPT = ["image/png", "image/jpg", "image/jpeg"];
+        const MAXSIZE_STR = 60000
+        const upload = document.getElementById("upload");
+
+
+        //转换Base64方法
+        const convertImageToBase64 = (file, callback) => {
+            // console.log(file)
+            let reader = new FileReader();
+            reader.addEventListener("load", function (e) {
+                // console.log(e.target.result)
+                const base64Image = e.target.result
+                callback && callback(base64Image)
+            })
+            reader.readAsDataURL(file)
+        }
+
+
+        //压缩方法
+        const compress = (base64Image, callback) => {
+            // console.log(base64Image)
+            let maxW = 1024;
+            let maxH = 1024;
+            const image = new Image();
+
+            image.addEventListener("load", function (e) {
+                let ratio //图片压缩比
+                let needCompress = false;//是否需要压缩
+                console.log(image.naturalWidth)
+                if (maxW < image.naturalWidth) {
+                    needCompress = true
+                    ratio = image.naturalWidth / maxW
+                    // console.log(ratio)
+                    maxH = image.naturalHeight / ratio
+                    // console.log(maxH)
+                }
+                if (maxH < image.naturalHeight) {
+                    needCompress = true
+                    ratio = image.naturalHeight / maxH
+                    // console.log(ratio)
+                    maxW = image.naturalWidth / ratio
+                    // console.log(maxH)
+                }
+
+                //如果没被压缩那就不用 
+                if (!needCompress) {
+                    let maxW = image.naturalWidth;
+                    let maxH = image.naturalHeight;
+                }
+
+                const canvas = document.createElement("canvas");
+                canvas.setAttribute("id", "__compress__");
+                canvas.width = maxW;
+                canvas.height = maxH;
+                canvas.style.visibility = "hidden"
+                document.body.appendChild(canvas);
+
+                const ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, maxW, maxH);
+                ctx.drawImage(image, 0, 0, maxW, maxH);
+                const compressImage = canvas.toDataURL("image/jpeg", 0.8);
+
+                callback && callback(compressImage)
+                const _image = new Image();
+                _image.src = compressImage;
+                document.body.append(_image);
+                canvas.remove()
+            })
+            image.src = base64Image
+            document.body.appendChild(image)
+        }
+
+        function uploadToServe(compressImage) {
+            console.log("upLoad" + compressImage)
+        }
+
+        upload.addEventListener("change", function (e) {
+            // console.log(e.target.files)
+            const [file] = e.target.files
+            // console.log(file)
+
+            if (!file) {
+                return
+            }
+            const MAXSIZE_STR = 1000000
+            const { type: fileType, size: fileSize } = file
+
+
+
+
+            // if (ACCEPT.indexOf(fileType) < 0) {
+            if (!ACCEPT.includes(fileType)) {
+                console.log(fileType)
+                alert(`不支持${fileType}文件类型`)
+                upload.value = ""
+                return
+            }
+
+            if (MAXSIZE_STR < fileSize) {
+                console.log(fileSize)
+                alert(`超出${MAXSIZE_STR}`)
+                upload.value = ""
+                return
+            }
+
+
+            //压缩
+            convertImageToBase64(file, (base64Image) => compress(base64Image, uploadToServe))
+
+
+        })
+
+    </script>
+</body>
+
+</html>
