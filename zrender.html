@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/zrender@4.3.0/dist/zrender.js"></script>
+</head>
+
+<body>
+    <div id="container" style="width:800px;height:800px;background-color: #f1f1f1;">
+
+    </div>
+
+    <script>
+        let zr = zrender.init(document.getElementById("container"))
+        console.log(zr)
+
+        let rect = new zrender.Rect({
+            shape: {
+                x: 0,
+                y: 0,
+                width: 40,
+                height: 40,
+
+            },
+            style: {
+                fill: 'red',
+                stroke: '#F00',
+                lineWidth: 3
+            }
+        });
+
+        let line = new zrender.Polyline({
+            shape: {
+                points: [
+                    [100, 200],
+                    [200, 150],
+                    [300, 400]
+                ]
+            },
+            style: {
+
+                stroke: "#f00",
+                lineWidth: 1
+            }
+        })
+
+        let circle = new zrender.Circle({
+            shape: {
+                cx: 100,
+                cy: 100,
+                r: 40
+            },
+            style: {
+                stroke: "#999",
+                lineWidth: 2
+            }
+        })
+
+        let point = new zrender.Polyline({
+            shape: {
+                points: [
+                    [300, 300],
+                    [301, 301]
+                ]
+            },
+            style: {
+
+                stroke: "red",
+                lineWidth: 1
+            }
+        })
+
+        zr.add(rect);
+        zr.add(line)
+        zr.add(circle)
+        zr.add(point)
+    </script>
+</body>
+
+</html>
